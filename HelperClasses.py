@@ -1,9 +1,12 @@
+from operator import attrgetter
+
 class LineToIntersect:
     def __init__(self, x1, y1, x2, y2):
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
+        self.intersectionPoints = list() # to use for splitting the line
         
         # calculate slope on line construction
         if(x2 <> x1):
@@ -16,6 +19,18 @@ class LineToIntersect:
 
     def __str__(self):
         return "[({0},{1}), ({2},{3})]".format(self.x1, self.y1, self.x2, self.y2)
+
+    def printInteresectionPoints(self):
+        for p in self.intersectionPoints:
+            print '({0},{1})'.format(p.x, p.y)
+
+    def addIntersectionPoint(self, interestionPoint):
+        self.intersectionPoints.append(interestionPoint)
+
+    def sortIntersectionPoints(self):
+        sortedByY = sorted(self.intersectionPoints, key=attrgetter('y'))
+        sortedByXThenY = sorted(sortedByY, key = attrgetter('x'))
+        self.intersectionPoints = sortedByXThenY
 
     
     # see determinant method here https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection

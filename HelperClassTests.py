@@ -17,3 +17,15 @@ print "intersection of line {0} with line {1} calculated to be {2}".format(line1
 print "intersection of line {0} with line {1} calculated to be {2}".format(line3, line4, intersectionPoint2)
 print "intersection of line {0} with line {1} calculated to be {2}".format(line2, line6, intersectionPoint3)
 print "intersection of line {0} with line {1} calculated to be {2}".format(line5, line1, intersectionPoint4)
+
+
+line1.addIntersectionPoint(hc.IntersectionPoint(1,1, True))
+line1.addIntersectionPoint(hc.IntersectionPoint(1,3, True))
+line1.addIntersectionPoint(hc.IntersectionPoint(1,2, True))
+
+print 'unsorted intersection points:'
+line1.printInteresectionPoints()
+
+print '\nsorted intersection points:'
+line1.sortIntersectionPoints()
+line1.printInteresectionPoints()
