@@ -1,6 +1,13 @@
 import cv2
 
-# from http://www.roguebasin.com/index.php?title=Bresenham%27s_Line_Algorithm
+# Takes the line (defined by 2 points) and uses Bresenham to examine pixels from the line on the supplied smooth image.
+# Calculates what percentage of pixels have gradients within certain number of degrees of average of all gradients
+# on the line, and returns True if the line has enough pixels within gradient range over the threshold.
+#
+# TODO - Bresenham part should be ok, but code after that may need to be adjusted to further match with 
+# Generic Sign Board Detection in Images paper
+# Bresenham from http://www.roguebasin.com/index.php?title=Bresenham%27s_Line_Algorithm
+
 def matchLineUsingBresenham(x1, y1, x2, y2, smoothedImage):
 
     #print 'in drawBresenham2 with line ({0},{1}) to ({2}, {3})'.format(x1, y1, x2, y2)
