@@ -1,5 +1,9 @@
 import HelperClasses as hc
 
+# Given a list of lines (of type LineToIntersect), this
+# 1) Calculates intersections of all lines
+# 2) Splits each line based on intersections on the line
+# 3) Returns the new list of split line segments
 def splitLinesBasedOnIntersections(lines):
     splitLines = list()
 
