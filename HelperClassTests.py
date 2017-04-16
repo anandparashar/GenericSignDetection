@@ -1,4 +1,5 @@
 import HelperClasses as hc
+import LineSplitter as ls
 
 
 line1 = hc.LineToIntersect(1,1,1,4)
@@ -19,6 +20,7 @@ print "intersection of line {0} with line {1} calculated to be {2}".format(line2
 print "intersection of line {0} with line {1} calculated to be {2}".format(line5, line1, intersectionPoint4)
 
 
+#####testing sorting
 line1.addIntersectionPoint(hc.IntersectionPoint(1,1, True))
 line1.addIntersectionPoint(hc.IntersectionPoint(1,3, True))
 line1.addIntersectionPoint(hc.IntersectionPoint(1,2, True))
@@ -29,3 +31,24 @@ line1.printInteresectionPoints()
 print '\nsorted intersection points:'
 line1.sortIntersectionPoints()
 line1.printInteresectionPoints()
+
+
+#####Testing line splitting
+lineA = hc.LineToIntersect(0,0,4,4)
+lineB = hc.LineToIntersect(0,4,4,0)
+lineC = hc.LineToIntersect(3,0,3,4)
+
+unsplitLines = list()
+unsplitLines.append(lineA)
+unsplitLines.append(lineB)
+unsplitLines.append(lineC)
+
+print '\n\nunsplit lines'
+for unsplitLine in unsplitLines:
+    print '{0}'.format(unsplitLine)
+
+splitLines = ls.splitLinesBasedOnIntersections(unsplitLines)
+
+print '\n\nsplit lines'
+for splitLine in splitLines:
+    print '{0}'.format(splitLine)
