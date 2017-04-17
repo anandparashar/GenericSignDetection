@@ -1,5 +1,6 @@
 import HelperClasses as hc
 import LineSplitter as ls
+import NeighborFinder as nf
 
 
 line1 = hc.LineToIntersect(1,1,1,4)
@@ -20,6 +21,14 @@ print "intersection of line {0} with line {1} calculated to be {2}".format(line2
 print "intersection of line {0} with line {1} calculated to be {2}".format(line5, line1, intersectionPoint4)
 
 
+###### Testing line equality
+lineX = hc.LineToIntersect(1,1,2,2)
+lineY = hc.LineToIntersect(1,1,2,2)
+lineZ = hc.LineToIntersect(1,1,2,1)
+
+print 'lineX == lineY is {0}'.format(lineX == lineY) # should be true
+print 'lineY == lineZ is {0}'.format(lineY == lineZ) # should be false
+
 #####testing sorting
 line1.addIntersectionPoint(hc.IntersectionPoint(1,1, True))
 line1.addIntersectionPoint(hc.IntersectionPoint(1,3, True))
@@ -34,9 +43,9 @@ line1.printInteresectionPoints()
 
 
 #####Testing line splitting
-lineA = hc.LineToIntersect(0,0,4,4)
-lineB = hc.LineToIntersect(0,4,4,0)
-lineC = hc.LineToIntersect(3,0,3,4)
+lineA = hc.LineToIntersect(0,0,3,3)
+lineB = hc.LineToIntersect(0,1,4,1)
+lineC = hc.LineToIntersect(3,1,3,3)
 
 unsplitLines = list()
 unsplitLines.append(lineA)
@@ -52,3 +61,11 @@ splitLines = ls.splitLinesBasedOnIntersections(unsplitLines)
 print '\n\nsplit lines'
 for splitLine in splitLines:
     print '{0}'.format(splitLine)
+
+#####Testing neighbors
+neighborDictionary = nf.getPointsAndNeighborsFromLineSegments(splitLines)
+
+for key, value in neighborDictionary.iteritems():
+    print '\n\nneighbors of {0} are:'.format(key)
+    for neighbor in value:
+        print '{0}'.format(neighbor)

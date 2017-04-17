@@ -6,7 +6,10 @@ class LineToIntersect:
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
+        self.point1 = IntersectionPoint(x1, y1, True)
+        self.point2 = IntersectionPoint(x2,y2, True)
         self.intersectionPoints = list() # to use for splitting the line
+        # self.lineNeighbors = set()
         
         # calculate slope on line construction
         if(x2 <> x1):
@@ -16,6 +19,22 @@ class LineToIntersect:
             # vertical line
             self.slope = float('inf')
             self.slopeAbs = float('inf')
+
+    def __eq__(self, other):
+        """Override default Equals behavior"""
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        return NotImplemented
+
+    def __ne__(self, other):
+        """Define a non-equality test"""
+        if isinstance(other, self.__class__):
+            return not self.__eq__(other)
+        return NotImplemented
+
+    def __hash__(self):
+        """Override the default hash behavior (that returns the id or the object)"""
+        return hash(tuple(sorted(self.__dict__.items())))
 
     def __str__(self):
         return "[({0},{1}), ({2},{3})]".format(self.x1, self.y1, self.x2, self.y2)
@@ -31,6 +50,13 @@ class LineToIntersect:
         sortedByY = sorted(self.intersectionPoints, key=attrgetter('y'))
         sortedByXThenY = sorted(sortedByY, key = attrgetter('x'))
         self.intersectionPoints = sortedByXThenY
+
+    # def addNeighbor(self, lineNeighbor):
+    #     self.lineNeighbors.add(lineNeighbor)
+
+    # def printLineNeighbors(self):
+    #     for l in self.lineNeighbors:
+    #         print '({0})'.format(l)
 
     
     # see determinant method here https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
@@ -70,6 +96,7 @@ class IntersectionPoint:
         self.x = x
         self.y = y
         self.valid = valid
+        # self.pointNeighbors = set()
 
     def __str__(self):
         return "({0},{1}): valid = {2}".format(self.x, self.y, self.valid)
@@ -90,3 +117,10 @@ class IntersectionPoint:
     def __hash__(self):
         """Override the default hash behavior (that returns the id or the object)"""
         return hash(tuple(sorted(self.__dict__.items())))
+
+    # def addNeighbor(self, pointNeighbor):
+    #     self.pointNeighbors.add(pointNeighbor)
+
+    # def printLineNeighbors(self):
+    #     for p in self.pointNeighbors:
+    #         print '({0})'.format(p)
