@@ -17,3 +17,16 @@ def getPointsAndNeighborsFromLineSegments(lines):
         neighborDictionary[line.point2].add(line.point1)
 
     return neighborDictionary
+
+# Performs same function as getPointsAndNeighborsFromLineSegments(), but
+# filters results to those points that have more than one neighbor
+def getPointsAndNeighborsWithMoreThanOneNeighbor(lines):
+    neighborDictionary = getPointsAndNeighborsFromLineSegments(lines)
+
+    trimmedNeighborDictionary = dict()
+
+    for key, value in neighborDictionary.iteritems():
+        if len(value) > 1:
+            trimmedNeighborDictionary[key] = value
+
+    return trimmedNeighborDictionary
