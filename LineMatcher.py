@@ -1,5 +1,50 @@
 import cv2
 
+
+# Returns gradient angles for pixels in the image
+def getGradientAngles(image):
+    scale = 1
+    delta = 0
+    ddepth = cv2.CV_32FC1
+
+    # see http://stackoverflow.com/questions/22381704/sobel-operator-for-gradient-angle
+    # and http://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#phase
+
+    # X gradient
+    xGradient = cv2.Sobel(image, ddepth, 1, 0, dst=None, ksize=3, scale = scale, delta = delta)
+
+    # Y gradient
+    yGradient = cv2.Sobel(image, ddepth, 0, 1, dst=None, ksize=3, scale = scale, delta = delta)
+
+
+    gradientAngles = cv2.phase(xGradient, yGradient, angle=None, angleInDegrees=True)
+
+    return gradientAngles
+
+
+# Returns a tuple containing the min and max angle to be used for determining
+# if gradient is within the acceptability wedge, as well as a flag indicating
+# if some of that wedge spans the 360 degree mark
+def getFlagAndMinMaxAngles(averageGradient, angleThreshold):
+    minAngle = 0
+    maxAngle = 0
+    bAdd360 = False
+
+    if (averageGradient + angleThreshold) > 360: # passing 0 degrees again
+        minAngle = averageGradient - angleThreshold
+        bAdd360 = True
+    elif (averageGradient - angleThreshold < 0): # need to rotate starting angle to before 360
+        minAngle = 360 + (averageGradient - angleThreshold)
+        bAdd360 = True
+    else:
+        minAngle = averageGradient - angleThreshold
+
+    maxAngle = minAngle + (2 * angleThreshold) # now we have a angle range
+
+    #print 'flag = {0}, min = {1}, max = {2}'.format(bAdd360, minAngle, maxAngle)
+    return (bAdd360, minAngle, maxAngle)
+
+
 # Takes the line (defined by 2 points) and uses Bresenham to examine pixels from the line on the supplied smooth image.
 # Calculates what percentage of pixels have gradients within certain number of degrees of average of all gradients
 # on the line, and returns True if the line has enough pixels within gradient range over the threshold.
@@ -7,7 +52,6 @@ import cv2
 # TODO - Bresenham part should be ok, but code after that may need to be adjusted to further match with 
 # Generic Sign Board Detection in Images paper
 # Bresenham from http://www.roguebasin.com/index.php?title=Bresenham%27s_Line_Algorithm
-
 def matchLineUsingBresenham(x1, y1, x2, y2, smoothedImage):
 
     #print 'in drawBresenham2 with line ({0},{1}) to ({2}, {3})'.format(x1, y1, x2, y2)
@@ -99,44 +143,6 @@ def matchLineUsingBresenham(x1, y1, x2, y2, smoothedImage):
     return matched
 
 
-# Returns a tuple containing the min and max angle to be used for determining
-# if gradient is within the acceptability wedge, as well as a flag indicating
-# if some of that wedge spans the 360 degree mark
-def getFlagAndMinMaxAngles(averageGradient, angleThreshold):
-    minAngle = 0
-    maxAngle = 0
-    bAdd360 = False
-
-    if (averageGradient + angleThreshold) > 360: # passing 0 degrees again
-        minAngle = averageGradient - angleThreshold
-        bAdd360 = True
-    elif (averageGradient - angleThreshold < 0): # need to rotate starting angle to before 360
-        minAngle = 360 + (averageGradient - angleThreshold)
-        bAdd360 = True
-    else:
-        minAngle = averageGradient - angleThreshold
-
-    maxAngle = minAngle + (2 * angleThreshold) # now we have a angle range
-
-    #print 'flag = {0}, min = {1}, max = {2}'.format(bAdd360, minAngle, maxAngle)
-    return (bAdd360, minAngle, maxAngle)
 
 
-def getGradientAngles(image):
-    scale = 1
-    delta = 0
-    ddepth = cv2.CV_32FC1
 
-    # see http://stackoverflow.com/questions/22381704/sobel-operator-for-gradient-angle
-    # and http://docs.opencv.org/2.4/modules/core/doc/operations_on_arrays.html#phase
-
-    # X gradient
-    xGradient = cv2.Sobel(image, ddepth, 1, 0, dst=None, ksize=3, scale = scale, delta = delta)
-
-    # Y gradient
-    yGradient = cv2.Sobel(image, ddepth, 0, 1, dst=None, ksize=3, scale = scale, delta = delta)
-
-
-    gradientAngles = cv2.phase(xGradient, yGradient, angle=None, angleInDegrees=True)
-
-    return gradientAngles
