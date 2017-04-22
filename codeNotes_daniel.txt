@@ -1,0 +1,70 @@
+1) Code referenced in these code notes:
+----HelperClasses.py
+----HelperClassTests.py
+----LineMatcher.py
+----LineSplitter.py
+----LineVerifier.py
+----NeighborFinder.py
+
+
+2) HelperClasses
+----Contains definition for lines (LineToIntersect) and points (IntersectionPoints)
+----These are the types of objects assumed to be used by other code files.
+--------LineToIntersect
+------------Represents a line by 2 endpoints (x1,y1) and (x2,y2).  Has separate properties x1,y1,x2,y2.
+------------Also stores 2 IntersectionPoint objects representing the endpoints.
+------------Contains method find_intersection_int() to calculate intersection with another line
+------------Also contains method to print, add, and sort IntersectionPoints
+----------------IntersectionPoints associated with a line could be used in closed circuit detection.
+--------IntersectionPoint
+------------Simple class to store a point with x, y properties
+
+3) HelperClassTests
+----Just some command-line tests I added to test the various code pieces as I developed them
+
+4) LineMatcher
+----Used to match lines against the smoothed gray image to weed out those lines that don't meet thresholds
+----Methods:
+--------getGradientAngles()
+------------Gets the gradient angles for each pixes in the supplied image
+--------getFlagAndMinMaxAngles()
+------------Given averageGradient and angleThreshold, returns a flag and min and max angle to be used
+----------------to when validating pixel gradients.  Pixel gradients must be >= min and <= max to be
+----------------acceptable.  Flag indicates whether the gradient range spans 0 or 360 so we'll know
+----------------to account for that (range could be calculated to be 335-365 if average was 350, for 
+----------------example, so we'd want to accept gradients with angles 350 and 10 deg.)
+--------matchLineUsingBresenham()
+------------Given 2 end points and an image, uses Bresenham to examine line pixels on image
+------------Calculates average gradient for line and uses getFlagAndMinMaxAngles() to
+----------------check each line pixel to see if it is within gradient threshold.
+------------If 80% of pixels on line are within threshold, returns true indicating we should keep the 
+----------------line.
+------------This is the part we'll probably want to tweak depending on how it performs in weeding
+----------------out bad lines.
+
+5) LineSplitter
+----Contains one method splitLinesBasedOnIntersections()
+--------Given a set of lines, calculate all intersections.
+--------Then split the lines based on those intersections.
+--------Return a new set of lines based on those splits.
+
+6) LineVerifier
+----One method getVerifiedLines()
+--------Given a set of lines, split them using LineSplitter
+--------Then use LineMatcher to determine if each split segment meets our requirements
+--------Return only those lines that meet requirements
+--------These are the lines and points that should be used starting in 4.1 Find Close Circuits
+
+7) NeighborFinder
+----Used to find neighbors of endpoints of lines.  So if line A has endpoints (X,Y) and line
+--------B has endpoints (Z, X), then X has Y and Z as neighbors since it is an endpoint on those
+--------two lines.  We may not need this but I thought it could be useful for finding closed circuits.
+----getPointsAndNeighborsFromLineSegments()
+--------Returns a dictionary keyed on every point in list of line segments.  
+--------Value for each key is the list of neighbors for each point.
+----getPointsAndNeighborsWithMoreThanOneNeighbor()
+--------Same thing as getPointsAndNeighborsFromLineSegments() but returns a dictionary with
+------------keys only for points that have at least 2 neighbors ( related to 4.1 in paper 
+------------where it says "First, delete the points with only one segment connected to it, 
+------------like point 9 in Fig. 8(a)"
+
