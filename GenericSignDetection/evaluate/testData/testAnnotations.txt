@@ -1,0 +1,15 @@
+stop_1330545910.avi_image0.png;862;104;916;158
+stop_1330545910.avi_image0.png;425;197;438;213
+stop_1330545910.avi_image1.png;922;88;982;148
+stop_1330545910.avi_image1.png;447;193;461;210
+stop_1330545910.avi_image2.png;551;191;572;216
+speedLimit_1330545914.avi_image15.png;551;191;572;216
+speedLimit_1330545914.avi_image16.png;566;189;587;214
+speedLimit_1330545914.avi_image17.png;586;187;608;214
+speedLimit_1330545914.avi_image18.png;610;183;632;210
+stop_1330545935.avi_image0.png;376;138;413;175
+stop_1330545935.avi_image0.png;709;203;726;227
+stop_1330545935.avi_image1.png;412;145;451;185
+negativePics/nosign00003.png;0;0;0;0
+negativePics/nosign00004.png;551;191;572;216
+negativePics/nosign00005.png;0;0;0;0

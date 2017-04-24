@@ -1,0 +1,16 @@
+Filename;Annotation tag;Upper left corner X;Upper left corner Y;Lower right corner X;Lower right corner Y;Occluded,On another road;Origin file;Origin frame number;Origin track;Origin track frame number
+stop_1330545910.avi_image0.png;stop;862;104;916;158;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2667;stop_1330545910.avi;2
+stop_1330545910.avi_image0.png;speedLimitUrdbl;425;197;438;213;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2667;stop_1330545910.avi;2
+stop_1330545910.avi_image1.png;stop;922;88;982;148;1,0;aiua120214-0/DataLog02142012_external_camera.avi;2672;stop_1330545910.avi;7
+stop_1330545910.avi_image1.png;speedLimit25;447;193;461;210;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2672;stop_1330545910.avi;7
+stop_1330545910.avi_image2.png;speedLimit25;469;189;483;207;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2677;stop_1330545910.avi;12
+speedLimit_1330545914.avi_image15.png;speedLimit25;551;191;572;216;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2822;speedLimit_1330545914.avi;107
+speedLimit_1330545914.avi_image16.png;speedLimit25;566;189;587;214;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2829;speedLimit_1330545914.avi;114
+speedLimit_1330545914.avi_image17.png;speedLimit25;586;187;608;214;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2836;speedLimit_1330545914.avi;121
+speedLimit_1330545914.avi_image18.png;speedLimit25;610;183;632;210;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2843;speedLimit_1330545914.avi;128
+stop_1330545935.avi_image0.png;stop;376;138;413;175;0,0;aiua120214-0/DataLog02142012_external_camera.avi;3176;stop_1330545935.avi;2
+stop_1330545935.avi_image0.png;stop;709;203;726;227;0,1;aiua120214-0/DataLog02142012_external_camera.avi;3176;stop_1330545935.avi;2
+stop_1330545935.avi_image1.png;stop;412;145;451;185;0,0;aiua120214-0/DataLog02142012_external_camera.avi;3181;stop_1330545935.avi;7
+negativePics/nosign00003.png
+negativePics/nosign00004.png
+negativePics/nosign00005.png
