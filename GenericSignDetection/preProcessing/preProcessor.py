@@ -16,11 +16,15 @@ import cv2
     harriscorner_kSize          = k size for Sobel filter
     harriscorner_freeparam      = Harris detector free parameter
     smallsegmentremoval_ratio   = ratio of (length of smallest segment included/length of longest segment in image)
+    hough_threshold   = threshold for Probabilistic Hough Transform
+    hough_minLen = minimum length of line segment to be detetected
+    hough_maxGap = maximum gap between two line segments to join them as a continuous line segment
 
     output:
     processed image ready for hough transform and line verification
 '''
-def process(image, canny_param1, canny_param2, harriscorner_blockSize , harriscorner_kSize, harriscorner_freeparam, smallsegmentremoval_ratio):
+def process(image, canny_param1, canny_param2, harriscorner_blockSize , harriscorner_kSize, harriscorner_freeparam,
+            smallsegmentremoval_ratio, hough_threshold, hough_minLen, hough_maxGap):
     edgeImg = cannyEdgeDetection(image, canny_param1, canny_param2)
     displayResized("edge image", edgeImg)
 
@@ -32,8 +36,10 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     # Small segment Removal
     processedImage = smallSegmentRemovalContours(edgeImgProcessed, smallsegmentremoval_ratio)
     displayResized("after contour removal", processedImage)
+
+    houghLines = lineDetectionProbHough(processedImage, hough_threshold, hough_minLen, hough_maxGap)
     cv2.waitKey(0)
-    return processedImage
+    return processedImage, houghLines
 
 '''
     Helper function to display re-sized image while maintaining aspect ratio
@@ -115,5 +121,41 @@ def smallSegmentRemovalContours(image, ratio):
             image = cv2.drawContours(image, contours, i, color=(0,0,0))
     # displayResized("after contour removal", image)
     return image
+
+
+def ProbabilisticHoughTransform(image, rho, theta, threshold, minLength, maxGap):
+    #perfrom Probabilistic Hough transform
+    lines = cv2.HoughLinesP(image, rho, theta, threshold, minLineLength=minLength, maxLineGap=maxGap)
+    return lines
+
+'''
+    Function to perform Contour detection and removal for small segments in the image
+
+    TODO - CHange to Gradient Hough Transform if required
+
+    parameters:
+    image   = image to be processed
+    threshold   = threshold for Probabilistic Hough Transform
+    minLen = minimum length of line segment to be detetected
+    maxGap = maximum gap between two line segments to join them as a continuous line segment
+
+    output:
+    lines detected
+'''
+def lineDetectionProbHough(image, threshold, minLen, maxGap):
+    houghLines = []
+    #Probabilistic Hough Transform
+    lines = ProbabilisticHoughTransform(image, rho=1, theta=np.pi/180, threshold=threshold, minLength=minLen, maxGap=maxGap)
+    print (len(lines))
+    for points in lines:
+        # print (points)
+        for x1, y1, x2, y2 in points:
+            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(255, 255,255), thickness=2)
+            houghLines.append(((x1, y1), (x2, y2)))
+    displayResized("Hough Lines Probabilistic", image)
+    return houghLines
+
+
+
 
 

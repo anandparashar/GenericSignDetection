@@ -17,14 +17,17 @@ def displayResized(message, imageDisp):
 def main():
     #read image
     img= cv2.imread("D:/Study/CS-682ComputerVision/LISATrafficSignDatabase/signDatabasePublicFramesOnly/aiua120306-1/"
-                    "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/pedestrianCrossing_1333395741.avi_image24.png")
+                    "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png")
 
     preProcessor.process(image=img, canny_param1=70,
                          canny_param2=210,
                          harriscorner_blockSize=2,
                          harriscorner_kSize=3,
                          harriscorner_freeparam=0.4,
-                         smallsegmentremoval_ratio=0.05
+                         smallsegmentremoval_ratio=0.05,
+                         hough_threshold=10,
+                         hough_minLen=15,
+                         hough_maxGap=7
                          )
 
 
