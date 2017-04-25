@@ -10,7 +10,7 @@ import sys
 
 
 
-#enter path path to the root of your image directory here
+#enter path to the root of your image directory here
 
 DATA_ROOT_PATH = "path/to/signDatabasePublicFramesOnly"
 
