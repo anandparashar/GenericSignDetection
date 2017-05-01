@@ -39,7 +39,7 @@ def splitLinesBasedOnIntersections(lines, h, w):
                 and (intersectionPoint.x >= 0 and intersectionPoint.x <= (w-1))
                 and (intersectionPoint.y >= 0 and intersectionPoint.y <= (h-1))):
                 currentLine.addIntersectionPoint(intersectionPoint)
-                print 'intersection point: {0}'.format(intersectionPoint)
+                # print 'intersection point: {0}'.format(intersectionPoint)
 
                 # Add this intersection to the other line, too, since we won't revisit currentLine again
                 lineToTest.addIntersectionPoint(intersectionPoint)
