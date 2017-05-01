@@ -1,5 +1,6 @@
 import LineSplitter as ls
 import LineMatcher as lm
+import cv2
 
 
 # Given a set of lines (LineToIntersect), splits the lines based on intersections.  
@@ -8,8 +9,9 @@ import LineMatcher as lm
 def getVerifiedLines(lines, smoothedImage):
     verifiedLines = list()
 
+    h, w = smoothedImage.shape[:2]
     # First, split the lines based on intersections
-    splitLines = ls.splitLinesBasedOnIntersections(lines)
+    splitLines = ls.splitLinesBasedOnIntersections(lines, h, w)
 
     # Now verify the line
     for line in splitLines:
