@@ -1,5 +1,7 @@
 import numpy as np
 import cv2
+import math
+
 
 '''
     Calls individual modules inside pre-processing stage and returns the final processed Image
@@ -38,6 +40,7 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     displayResized("after contour removal", processedImage)
 
     houghLines = lineDetectionProbHough(processedImage, hough_threshold, hough_minLen, hough_maxGap)
+    # houghLines = lineDetectionStandardHough(processedImage)
     cv2.waitKey(0)
     return processedImage, houghLines
 
@@ -122,6 +125,10 @@ def smallSegmentRemovalContours(image, ratio):
     # displayResized("after contour removal", image)
     return image
 
+def StandardHoughTransform(image, rho, theta, threshold, srn, stn):
+    #perfrom Standard Hough transform
+    lines = cv2.HoughLines(image, rho, theta, threshold, srn=srn, stn=stn)
+    return lines
 
 def ProbabilisticHoughTransform(image, rho, theta, threshold, minLength, maxGap):
     #perfrom Probabilistic Hough transform
@@ -153,6 +160,25 @@ def lineDetectionProbHough(image, threshold, minLen, maxGap):
             cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(255, 255,255), thickness=2)
             houghLines.append(((x1, y1), (x2, y2)))
     displayResized("Hough Lines Probabilistic", image)
+    return houghLines
+
+def lineDetectionStandardHough(image):
+    # Standard Hough Transform
+    houghLines=[]
+    lines = StandardHoughTransform(image, rho=1, theta=np.pi/180, threshold=150, srn=0, stn=0)
+    for points in lines:
+        for rho, theta in points:
+            a=np.cos(theta)
+            b=np.sin(theta)
+            x0=a*rho
+            y0=b*rho
+            x1 = int(np.around(x0 + 1000 * (-b)))
+            y1 = int(np.around(y0 + 1000 * (a)))
+            x2 = int(np.around(x0 - 1000 * (-b)))
+            y2 = int(np.around(y0 - 1000 * (a)))
+            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(255, 255,255), thickness=2)
+            houghLines.append(((x1,y1), (x2,y2)))
+    displayResized("Hough Lines Standard", image)
     return houghLines
 
 
