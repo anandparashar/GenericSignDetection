@@ -21,9 +21,12 @@ def displayResized(message, imageDisp):
 def main():
     #read image
 
-    img= cv2.imread("/home/joseph/cs682/final/Data/aiua120306-1/"
-                    "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveLeft_1333396989.avi_image1.png")
+    # img= cv2.imread("D:/Study/CS-682ComputerVision/LISATrafficSignDatabase/signDatabasePublicFramesOnly/aiua120306-1/"
+    #                 "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/pedestrianCrossing_1333395860.avi_image17.png")
     # "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png
+
+    img = cv2.imread("D:/Study/CS-682ComputerVision/LISATrafficSignDatabase/signDatabasePublicFramesOnly/vid8/"
+                     "frameAnnotations-MVI_0120.MOV_annotations/speedLimit_1324866418.avi_image7.png")
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -40,27 +43,28 @@ def main():
     cleaned = mmasked.filled(0) + noise.filled(0)
 
     cv2.imshow('Cleaned', cleaned)
-    cv2.imwrite('/home/joseph/cleaned.png', cleaned)
+    cv2.waitKey(0)
+    # cv2.imwrite('/home/joseph/cleaned.png', cleaned)
 
-
-
-    fixed = preProcessing.histogram.gammaCorrect(cleaned)
+    fixed = cleaned
+    # fixed = preProcessing.histogram.gammaCorrect(cleaned)
     fixedequal = cv2.equalizeHist(fixed)
 
-
     fixedFull = cv2.cvtColor(fixed, cv2.COLOR_GRAY2BGR)
-
+    displayResized("fixed full", fixedFull)
+    # cv2.waitKey(0)
 
     threshold = preProcessing.histogram.estimateThreshold(fixedFull)
+
     processed, lines = preProcessing.preProcessor.process(image=fixedFull, canny_param1=threshold / 2,
                                        canny_param2=threshold,
                                        harriscorner_blockSize=2,
                                        harriscorner_kSize=3,
                                        harriscorner_freeparam=0.4,
-                                       smallsegmentremoval_ratio=0.05,
-                                       hough_threshold=10,
-                                       hough_minLen=15,
-                                       hough_maxGap=4
+                                       smallsegmentremoval_ratio=0.02,
+                                       hough_threshold=15,
+                                       hough_minLen=7,
+                                       hough_maxGap=7
                                        )
 
     bigKern = np.ones( (2,2), dtype=np.uint8)

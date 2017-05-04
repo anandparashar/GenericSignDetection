@@ -30,19 +30,59 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     edgeImg = cannyEdgeDetection(image, canny_param1, canny_param2)
     displayResized("edge image", edgeImg)
 
+    #Morphological
+    kernel = np.ones((2, 2), np.uint8)
+    edgeImgProcessed = cv2.morphologyEx(edgeImg, cv2.MORPH_CLOSE, kernel)
+    # displayResized("after morphological transform", edgeImgProcessed)
+
     # Call to corner detector
-    edgeImgProcessed = edgeImg
-    edgeImgProcessed = cornerDetector(edgeImg, harriscorner_blockSize, harriscorner_kSize, harriscorner_freeparam)
-    displayResized("Corners detected!", edgeImgProcessed)
+    # edgeImgProcessed = edgeImg
+    edgeImgProcessed = cornerDetector(edgeImgProcessed, harriscorner_blockSize, harriscorner_kSize, harriscorner_freeparam)
+    # displayResized("Corners detected!", edgeImgProcessed)
 
     # Small segment Removal
     processedImage = smallSegmentRemovalContours(edgeImgProcessed, smallsegmentremoval_ratio)
     displayResized("after contour removal", processedImage)
 
+    kernel = np.ones((3, 3), np.uint8)
+    processedImage = dilation = cv2.dilate(processedImage,kernel,iterations = 1)
+    # # kernel = np.ones((3, 3), np.uint8)
+    processedImage = cv2.morphologyEx(processedImage, cv2.MORPH_CLOSE, kernel)
+    kernel = np.ones((3, 3), np.uint8)
+    processedImage = cv2.erode(processedImage,kernel,iterations = 1)
+    displayResized("after dilation", processedImage)
+
+    # processedImage = skeltonize(processedImage)
+    # displayResized("after skeltonization", processedImage)
+
     houghLines = lineDetectionProbHough(processedImage, hough_threshold, hough_minLen, hough_maxGap)
     # houghLines = lineDetectionStandardHough(processedImage)
     cv2.waitKey(0)
     return processedImage, houghLines
+
+
+def skeltonize(img):
+    size = np.size(img)
+    skel = np.zeros(img.shape, np.uint8)
+
+    ret, img = cv2.threshold(img, 127, 255, 0)
+    element = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+    done = False
+
+    while (not done):
+        eroded = cv2.erode(img, element)
+        temp = cv2.dilate(eroded, element)
+        temp = cv2.subtract(img, temp)
+        skel = cv2.bitwise_or(skel, temp)
+        img = eroded.copy()
+
+        zeros = size - cv2.countNonZero(img)
+        if zeros == size:
+            done = True
+
+    cv2.imshow("skel", skel)
+    return skel
+
 
 '''
     Helper function to display re-sized image while maintaining aspect ratio
@@ -153,11 +193,11 @@ def lineDetectionProbHough(image, threshold, minLen, maxGap):
     houghLines = []
     #Probabilistic Hough Transform
     lines = ProbabilisticHoughTransform(image, rho=1, theta=np.pi/180, threshold=threshold, minLength=minLen, maxGap=maxGap)
-    print (len(lines))
+    # print (len(lines))
     for points in lines:
         # print (points)
         for x1, y1, x2, y2 in points:
-            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(255, 255,255), thickness=2)
+            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(125, 125,125), thickness=2)
             houghLines.append(((x1, y1), (x2, y2)))
     displayResized("Hough Lines Probabilistic", image)
     return houghLines
