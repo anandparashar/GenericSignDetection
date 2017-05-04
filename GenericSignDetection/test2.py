@@ -4,6 +4,7 @@ import preProcessing.preProcessor
 import preProcessing.histogram
 import polyDetect.getAllPoly as gp
 import polyDetect.polyshape
+import polyDetect.cycleDetection as cd
 
 
 #Function to display re-sized image
@@ -17,7 +18,6 @@ def displayResized(message, imageDisp):
         height = width / aspectratio
     cv2.imshow(message, cv2.resize(imageDisp, (width, int(height))))
 
-
 def main():
     #read image
 
@@ -25,10 +25,24 @@ def main():
     #                 "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/pedestrianCrossing_1333395860.avi_image17.png")
     # "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png
 
-    img = cv2.imread("D:/Study/CS-682ComputerVision/LISATrafficSignDatabase/signDatabasePublicFramesOnly/vid8/"
-                     "frameAnnotations-MVI_0120.MOV_annotations/speedLimit_1324866418.avi_image7.png")
+    #img = cv2.imread("/home/joseph/cs682/final/Data/aiua120306-1/"
+    # "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png")
 
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #img = cv2.imread("/home/joseph/cs682/final/Data/vid8/"
+    #                "frameAnnotations-MVI_0120.MOV_annotations/speedLimit_1324866418.avi_image7.png")
+
+    # img = cv2.imread("/home/joseph/cs682/final/Data/aiua120306-1/"
+    # "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333395619.avi_image10.png")
+
+    img = cv2.imread("/home/joseph/cs682/final/Data/aiua120306-1/"
+    "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/dip_1333396129.avi_image7.png")
+
+    trimmed = np.delete(img, range(img.shape[0] - 16, img.shape[0]), axis=0)
+
+    if img.shape[2] == 3:
+        gray = cv2.cvtColor(trimmed, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = trimmed
 
     vmask = np.tile( [[0, 0], [1, 0]], (gray.shape[0]/2, gray.shape[1]/2))
 
@@ -56,24 +70,45 @@ def main():
 
     threshold = preProcessing.histogram.estimateThreshold(fixedFull)
 
-    processed, lines = preProcessing.preProcessor.process(image=fixedFull, canny_param1=threshold / 2,
+    processed, p2, lines = preProcessing.preProcessor.process(image=fixedFull, canny_param1=threshold / 2,
                                        canny_param2=threshold,
                                        harriscorner_blockSize=2,
                                        harriscorner_kSize=3,
                                        harriscorner_freeparam=0.4,
                                        smallsegmentremoval_ratio=0.02,
-                                       hough_threshold=15,
-                                       hough_minLen=7,
+                                       hough_threshold=25,
+                                       hough_minLen=15,
                                        hough_maxGap=7
                                        )
 
+    lineImg = np.copy(fixedFull)
+    for (p1, p2) in lines:
+        cv2.line(lineImg, p1, p2, color=(0, 0, 255), thickness=1)
+
+    cv2.imshow('Lines', lineImg)
+    cv2.waitKey(0)
+
+    '''
     bigKern = np.ones( (2,2), dtype=np.uint8)
 
     bigger = cv2.dilate(processed, bigKern)
 
+    lineImg = np.copy(fixedFull)
 
+    for (p1, p2) in lines:
+        cv2.line(lineImg, p1, p2, (0, 0, 255), thickness=1)
 
-    shapes = gp.getAllPoly(bigger, 100, 1000)
+    cv2.imshow('Processed', processed)
+    cv2.imshow('Lines', lineImg)
+    cv2.waitKey(0)
+
+    '''
+    # shapes = cd.determineCycles(lines, 4)
+
+    # thinner = skeletonize(processed)
+    # sdImage = np.ones( (processed.shape[0] + 2, processed.shape[1] + 2), dtype=np.uint8 )
+    # sdImage[1:processed.shape[0] + 1, 1:processed.shape[1] + 1] = processed
+    shapes = gp.getAllPoly(processed, 100, 12000)
 
     imshape = img.shape
 
@@ -83,7 +118,9 @@ def main():
 
     for s in shapes:
         s.drawBoundingRect(outImg, (0, 255, 0))
-        s.drawContour(outImg, (255, 0, 0))
+        if s.isGoodSignCandidate(12):
+            color = (0, 0, 255)
+            s.drawContour(outImg, color)
 
     cv2.imshow('Shapes', outImg)
     cv2.waitKey(0)

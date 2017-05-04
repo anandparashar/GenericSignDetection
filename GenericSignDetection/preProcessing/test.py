@@ -36,9 +36,9 @@ def main():
                          harriscorner_kSize=3,
                          harriscorner_freeparam=0.4,
                          smallsegmentremoval_ratio=0.04,
-                         hough_threshold=10,
-                         hough_minLen=7,
-                         hough_maxGap=2
+                         hough_threshold=40,
+                         hough_minLen=10,
+                         hough_maxGap=0
                          )
     return processed, lines
 

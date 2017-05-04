@@ -32,7 +32,7 @@ def estimateThreshold(img):
     gsorted.sort()
 
     # Threshold value will leave the upper 8% of edge pixels intact
-    threshold =  gsorted[ int(gsorted.size*0.95)]
+    threshold =  gsorted[ int(gsorted.size*0.96)]
     return threshold
 
 ''' Calculates a 32 bin histogram from a grayscale image 
@@ -63,23 +63,36 @@ def gammaCorrect(img):
 
     # Check for empty sequences due to the the highest peak being too close to a luminance boundary
     if len(seq1) > 0:
-        c1 = np.argmax(hist[0:p1])
+        c1 = np.argmax(seq1)
     else:
-        c1 = p1+1
-    if len(seq2) > 0:
-        c2 = np.argmax(hist[p1+1:]) + p1+1
+        c1 = -1
 
-    # Determine the second highest peak
-    p2 = c1
-    step = -1
-    if hist[c2] >= hist[c1]:
+    if len(seq2) > 0:
+        c2 = np.argmax(seq2) + p1+6
+    else:
+        c2 = -1
+
+    if c2 == c1:
+        return img
+    elif c1 == -1:
         p2 = c2
         step = 1
+    elif c2 == -1:
+        p2 = c1
+        step = -1
+    elif hist[c2] >= hist[c1]:
+        p2 = c2
+        step = 1
+    else:
+        p2 = c1
+        step = -1
 
     diff = p1 - p2
 
     # Calculate the valley
     v = np.argmin(hist[p1:p2:step])
+
+    print p1, p2
 
     # Make sure the next highest peak is significant enough to care about
     if hist[p1]/hist[p2] < 4:
@@ -105,7 +118,7 @@ def gammaCorrect(img):
         l2 = math.log(ratio2, 2)
 
         gamma1 = 1.0/l1
-        gamma2 = 1.0 - l2
+        gamma2 = 0.5 - l2
 
         gamma = (gamma2 if (255.0 - mean2) < mean1 else gamma2)
 

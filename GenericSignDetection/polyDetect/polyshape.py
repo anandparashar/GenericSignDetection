@@ -1,15 +1,15 @@
 
 import cv2
 import numpy as np
+import math
 
 class polyshape:
     ''' Class representing a detected polygonal shape '''
 
     def __init__(self, contours):
 
-        self.points = cv2.convexHull(contours, returnPoints = True)
-        self.points = cv2.approxPolyDP(self.points, 1, closed = True)
-        # self.points = contours
+
+        self.points = contours
         self.sides = len(self.points)
         self.area = cv2.contourArea(self.points)
         moments = cv2.moments(self.points)
@@ -61,6 +61,37 @@ class polyshape:
 
     def getBoundingCenter(self):
         return (self.bx + self.width/2, self.by + self.height/2)
+
+    def compareRegularPoly(self, sides, angle, threshold):
+        if sides != self.sides:
+            return False
+
+        for i in range(0, sides):
+            vect1 = np.subtract(self.points[i], self.points[(i+1)%sides])
+            vect2 = np.subtract(self.points[(i+1)%sides], self.points[(i+2)%sides])
+
+            mag1 = np.linalg.norm(vect1)
+            mag2 = np.linalg.norm(vect2)
+            dp = np.vdot(vect1, vect2)
+
+            measure_angle = math.acos( dp/(mag1*mag2))*(180/np.pi)
+
+            if abs(angle - measure_angle) > threshold:
+                return False
+
+        return True
+
+    def isGoodSignCandidate(self, threshold):
+        if self.compareRegularPoly(4, 90, threshold):
+            return True
+        if self.compareRegularPoly(8, 135, threshold):
+            return True
+        if self.compareRegularPoly(3, 60, threshold):
+            return True
+
+        return False
+
+
 
 
     def verify(self):

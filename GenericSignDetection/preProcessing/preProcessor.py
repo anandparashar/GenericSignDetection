@@ -27,13 +27,16 @@ import math
 '''
 def process(image, canny_param1, canny_param2, harriscorner_blockSize , harriscorner_kSize, harriscorner_freeparam,
             smallsegmentremoval_ratio, hough_threshold, hough_minLen, hough_maxGap):
-    edgeImg = cannyEdgeDetection(image, canny_param1, canny_param2)
+    bImage = cv2.GaussianBlur(image, (3, 3), 1.25)
+    edgeImg = cannyEdgeDetection(bImage, canny_param1, canny_param2)
     displayResized("edge image", edgeImg)
 
     #Morphological
     kernel = np.ones((2, 2), np.uint8)
     edgeImgProcessed = cv2.morphologyEx(edgeImg, cv2.MORPH_CLOSE, kernel)
-    # displayResized("after morphological transform", edgeImgProcessed)
+    displayResized("after morphological transform", edgeImgProcessed)
+
+    preRemove = np.copy(edgeImgProcessed)
 
     # Call to corner detector
     # edgeImgProcessed = edgeImg
@@ -42,14 +45,17 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
 
     # Small segment Removal
     processedImage = smallSegmentRemovalContours(edgeImgProcessed, smallsegmentremoval_ratio)
-    displayResized("after contour removal", processedImage)
+    # processedImage = edgeImgProcessed
+    # displayResized("after contour removal", processedImage)
 
+    # kernel = np.ones((3, 3), np.uint8)
+    # processedImage = dilation = cv2.dilate(processedImage,kernel,iterations = 1)
     kernel = np.ones((3, 3), np.uint8)
-    processedImage = dilation = cv2.dilate(processedImage,kernel,iterations = 1)
-    # # kernel = np.ones((3, 3), np.uint8)
+    # kernel = np.array([[0, 0, 1, 0, 0], [0, 1, 1, 1, 0], [1, 1, 1, 1, 1], [0, 1, 1, 1, 0], [0, 0, 1, 0, 0] ], dtype=np.uint8)
+
     processedImage = cv2.morphologyEx(processedImage, cv2.MORPH_CLOSE, kernel)
     kernel = np.ones((3, 3), np.uint8)
-    processedImage = cv2.erode(processedImage,kernel,iterations = 1)
+    # processedImage = cv2.erode(processedImage,kernel,iterations = 1)
     displayResized("after dilation", processedImage)
 
     # processedImage = skeltonize(processedImage)
@@ -58,7 +64,7 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     houghLines = lineDetectionProbHough(processedImage, hough_threshold, hough_minLen, hough_maxGap)
     # houghLines = lineDetectionStandardHough(processedImage)
     cv2.waitKey(0)
-    return processedImage, houghLines
+    return preRemove, processedImage, houghLines
 
 
 def skeltonize(img):
@@ -192,12 +198,12 @@ def ProbabilisticHoughTransform(image, rho, theta, threshold, minLength, maxGap)
 def lineDetectionProbHough(image, threshold, minLen, maxGap):
     houghLines = []
     #Probabilistic Hough Transform
-    lines = ProbabilisticHoughTransform(image, rho=1, theta=np.pi/180, threshold=threshold, minLength=minLen, maxGap=maxGap)
+    lines = ProbabilisticHoughTransform(image, rho=1, theta=np.pi/360, threshold=threshold, minLength=minLen, maxGap=maxGap)
     # print (len(lines))
     for points in lines:
         # print (points)
         for x1, y1, x2, y2 in points:
-            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(125, 125,125), thickness=2)
+            # cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(125, 125,125), thickness=2)
             houghLines.append(((x1, y1), (x2, y2)))
     displayResized("Hough Lines Probabilistic", image)
     return houghLines
@@ -216,7 +222,7 @@ def lineDetectionStandardHough(image):
             y1 = int(np.around(y0 + 1000 * (a)))
             x2 = int(np.around(x0 - 1000 * (-b)))
             y2 = int(np.around(y0 - 1000 * (a)))
-            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(255, 255,255), thickness=2)
+            cv2.line(img=image, pt1=(x1, y1), pt2=(x2, y2),color=(255, 255, 255), thickness=1)
             houghLines.append(((x1,y1), (x2,y2)))
     displayResized("Hough Lines Standard", image)
     return houghLines
