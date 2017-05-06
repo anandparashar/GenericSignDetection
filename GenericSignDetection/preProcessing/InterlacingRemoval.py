@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 def clean(image):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     vmask = np.tile([[0, 0], [1, 0]], (gray.shape[0] / 2, gray.shape[1] / 2))
 

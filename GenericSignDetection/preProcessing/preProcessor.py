@@ -158,7 +158,7 @@ def cornerDetector(edgeImg, blockSize, kSize, freeParam):
     image with small segments removed
 '''
 def smallSegmentRemovalContours(image, ratio):
-    image, contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    image, contours, heirarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     maxLen=0
     for contour in contours:
         arcLength = cv2.arcLength(contour, False)

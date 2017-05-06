@@ -118,7 +118,7 @@ def gammaCorrect(img):
         l2 = math.log(ratio2, 2)
 
         gamma1 = 1.0/l1
-        gamma2 = 0.5 - l2
+        gamma2 = 1.0 - l2
 
         gamma = (gamma2 if (255.0 - mean2) < mean1 else gamma2)
 
