@@ -47,16 +47,17 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     # displayResized("Corners detected!", edgeImgProcessed)
 
     # Small segment Removal
+    processedImage = edgeImgProcessed
     processedImage = smallSegmentRemovalContours(edgeImgProcessed, preRemove, smallsegmentremoval_ratio)
 
     displayResized("after contour removal", processedImage)
 
-    # kernel = np.ones((3, 3), np.uint8)
-    # processedImage = dilation = cv2.dilate(processedImage,kernel,iterations = 1)
+    kernel = np.ones((2, 2), np.uint8)
+    processedImage = dilation = cv2.dilate(processedImage, kernel, iterations=1)
     # kernel = np.ones((3, 3), np.uint8)
     processedImage = cv2.morphologyEx(processedImage, cv2.MORPH_CLOSE, kernel)
-    # kernel = np.ones((2, 2), np.uint8)
-    # processedImage = cv2.erode(processedImage,kernel,iterations = 1)
+    # kernel = np.ones((3, 3), np.uint8)
+    processedImage = cv2.erode(processedImage, kernel, iterations=1)
     displayResized("after Morphological Transform 2", processedImage)
 
     # processedImage = skeltonize(processedImage)
@@ -64,7 +65,7 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     houghLines = lineDetectionProbHough(processedImage, hough_threshold, hough_minLen, hough_maxGap)
     # houghLines = lineDetectionStandardHough(processedImage)
     cv2.waitKey(0)
-    return preRemove, processedImage, houghLines
+    return processedImage, processedImage, houghLines
 
 
 def skeltonize(img):
