@@ -7,6 +7,7 @@ import preProcessing.InterlacingRemoval as ilr
 import polyDetect.polyshape
 import polyDetect.cycleDetection as cd
 from datetime import datetime
+import ntpath
 
 
 #Function to display re-sized image
@@ -142,7 +143,26 @@ def main():
 
     cv2.imshow('Shapes', outImg)
     cv2.waitKey(0)
+
+    writeShapePredictionsToFile(fileName, bestShapes)
     cv2.destroyAllWindows()
+
+
+def writeShapePredictionsToFile(imageFileName, bestShapes):
+    imageFileNameOnly = path_leaf(imageFileName)
+
+    with open("predictions.txt", "w") as text_file:
+        for shape in bestShapes:
+            text_file.write('{0};{1};{2};{3};{4}\n'.format(imageFileNameOnly, shape.bx, shape.by, shape.bx + shape.bwidth, shape.by + shape.bheight))
+
+    # for shape in bestShapes:
+    #     # print '{0} {1}; width = {2}, height = {3}'.format(shape.bx, shape.by, shape.bwidth, shape.bheight)
+    #     print '{0};{1};{2};{3};{4}'.format(imageFileNameOnly, shape.bx, shape.by, shape.bx + shape.bwidth, shape.by + shape.bheight)
+
+#  see http://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
+def path_leaf(path):
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
 
 
 main()
