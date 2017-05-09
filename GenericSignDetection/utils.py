@@ -12,7 +12,7 @@ import sys
 
 #enter path to the root of your image directory here
 
-DATA_ROOT_PATH = "path/to/signDatabasePublicFramesOnly"
+DATA_ROOT_PATH = "/Volumes/ExDrive/CS682/signDatabasePublicFramesOnly"
 
 assert os.path.isdir(DATA_ROOT_PATH), "set DATA_ROOT_PATH to your data directory"
 

@@ -16,5 +16,5 @@ def clean(image):
 
     cleaned = mmasked.filled(0) + noise.filled(0)
 
-    cv2.imshow('Cleaned', cleaned)
+    #cv2.imshow('Cleaned', cleaned)
     return cleaned

@@ -1,0 +1,4 @@
+stop_1330545910.avi_image0.png;862;104;916;158
+negativePics/nosign00003.png;0;0;0;0
+negativePics/nosign00004.png;551;191;572;216
+negativePics/nosign00005.png;0;0;0;0

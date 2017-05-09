@@ -27,7 +27,13 @@ def main():
     print cv2.__version__
     #read image
 
+
     img= cv2.imread("D:/Study/CS-682ComputerVision/LISATrafficSignDatabase/signDatabasePublicFramesOnly/aiua120306-1/frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png")
+    # img= cv2.imread("D:/Study/CS-682ComputerVision/LISATrafficSignDatabase/signDatabasePublicFramesOnly/aiua120306-1/"
+    #                 "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/pedestrianCrossing_1333395860.avi_image17.png")
+    # "frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png
+
+    img = cv2.imread("/C:/Code/cs682/final/Data/signDatabasePublicFramesOnly/aiua120306-1/frameAnnotations-DataLog02142012_003_external_camera.avi_annotations/curveRight_1333396823.avi_image4.png")
 
     # img = cv2.imread("C:/Code/cs682/final/Data/vid8/"
     #                 "frameAnnotations-MVI_0120.MOV_annotations/speedLimit_1324866418.avi_image7.png")

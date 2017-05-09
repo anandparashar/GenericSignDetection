@@ -30,8 +30,8 @@ def evaluate(detectionFilePath, truthFilePath, minWidth=20, minHeight=20):
     """
     
     
-    detections = open(detectionFilePath, 'r').readlines()
-    annotations = open(truthFilePath, 'r').readlines()[1:]
+    detections = [x.trim() for x in open(detectionFilePath, 'r').readlines()]
+    annotations = [x.trim() for x in open(truthFilePath, 'r').readlines()[1:]]
     
     assert (len(detections) == len(annotations)), "the ground truth and prediction files are different lengths"
     
