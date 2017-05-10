@@ -1,4 +1,3 @@
-negatives/negativePics/nosign09824.png;;;;;;;;;;
 stop_1330545910.avi_image0.png;stop;862;104;916;158;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2667;stop_1330545910.avi;2
 stop_1330545910.avi_image0.png;speedLimitUrdbl;425;197;438;213;0,0;aiua120214-0/DataLog02142012_external_camera.avi;2667;stop_1330545910.avi;2
 stop_1330545910.avi_image1.png;stop;922;88;982;148;1,0;aiua120214-0/DataLog02142012_external_camera.avi;2672;stop_1330545910.avi;7
@@ -11,5 +10,6 @@ speedLimit_1330545914.avi_image18.png;speedLimit25;610;183;632;210;0,0;aiua12021
 stop_1330545935.avi_image0.png;stop;376;138;413;175;0,0;aiua120214-0/DataLog02142012_external_camera.avi;3176;stop_1330545935.avi;2
 stop_1330545935.avi_image0.png;stop;709;203;726;227;0,1;aiua120214-0/DataLog02142012_external_camera.avi;3176;stop_1330545935.avi;2
 stop_1330545935.avi_image1.png;stop;412;145;451;185;0,0;aiua120214-0/DataLog02142012_external_camera.avi;3181;stop_1330545935.avi;7
-negatives/negativePics/nosign09824.png;;;;;;;;;;
-negatives/negativePics/nosign01745.png;;;;;;;;;;
+negatives/negativePics/nosign00003.png;;;;;;;;;;
+negatives/negativePics/nosign00004.png;;;;;;;;;;
+negatives/negativePics/nosign00005.png;;;;;;;;;;

@@ -4,7 +4,7 @@ Created on May 7, 2017
 @author: Erich O'Saben
 '''
 
-import evaluate as eval
+from evaluate import evaluate_old as eval
 import utils as u
 
 import os 
