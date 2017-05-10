@@ -11,4 +11,4 @@ import evaluate_new as eval
 
 #eval.evaluate(os.path.join("testData", "testAnnotations.txt"), os.path.join("testData", "testGroundTruth.txt"))
 
-eval.evaluate(os.path.join("predictions2.txt"), os.path.join("..","create_testset","testGroundTruth2.csv"))
+eval.evaluate(os.path.join("predictions3.txt"), os.path.join("..","create_testset","testGroundTruth.csv"))
