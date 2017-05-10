@@ -69,68 +69,67 @@ def main():
         
         
         img = cv2.imread(os.path.join(u.DATA_ROOT_PATH,file_name))
-        
-        # Get rid of the non-image junk at the bottom of the aiua* direct images
-        trimmed = np.delete(img, range(img.shape[0] - 16, img.shape[0]), axis=0)
-        
-        # Convert to grayscale if the image is in color
-        if img.shape[2] == 3:
-            gray = cv2.cvtColor(trimmed, cv2.COLOR_BGR2GRAY)
+
+        # Screen for images that need additional cleanup and apply it if necessary
+        needsCleanup = "aiua12" in file_name
+
+        if needsCleanup:
+
+            # Get rid of the non-image junk at the bottom of the aiua* direct images
+            trimmed = np.delete(img, range(img.shape[0] - 16, img.shape[0]), axis=0)
+            # Remove screen effect
+            cleaned = ilr.clean(trimmed)
+
+            fixedFull = cv2.cvtColor(cleaned, cv2.COLOR_GRAY2BGR)
+            # Fix contrast if necessary
+            fixedFull = hist.contrastCorrect(fixedFull, 151, 1, 0.8, 0.25)
         else:
-            gray = trimmed
-        
-        
-        # Clean interlacing, only necessary in the aiua* data folders
-        cleaned = ilr.clean(trimmed)
-        
-        fixed = cleaned
-        # fixed = hist.gammaCorrect(cleaned)
-        
-        
-        # Back to full color
-        fixedFull = cv2.cvtColor(fixed, cv2.COLOR_GRAY2BGR)
-        #displayResized("fixed full", fixedFull)
-        
-        
+            fixedFull = hist.contrastCorrect(img, 151, 3, 0.8, 0.25)
+
         # Estimate a threshold value for the edge detector
         threshold = hist.estimateThreshold(fixedFull)
-    
-        processed, p2, lines = pp.process(image=fixedFull, canny_param1=threshold /2,
-                                           canny_param2=threshold,
-                                           harriscorner_blockSize=2,
-                                           harriscorner_kSize=3,
-                                           harriscorner_freeparam=0.4,
-                                           smallsegmentremoval_ratio=0.015,
-                                           hough_threshold=25,
-                                           hough_minLen=15,
-                                           hough_maxGap=7
-                                           )
-        
-        
-        
-        shapes = gp.getAllPoly(processed, 169, 12000, 5, 8, 4)
-    
+
+        # Run the rest of the preprocessing
+        processed, p2, lines = pp.process(image=fixedFull, canny_param1=threshold / 3,
+                                          canny_param2=threshold,
+                                          harriscorner_blockSize=2,
+                                          harriscorner_kSize=3,
+                                          harriscorner_freeparam=0.4,
+                                          smallsegmentremoval_ratio=0.015,
+                                          hough_threshold=25,
+                                          hough_minLen=15,
+                                          hough_maxGap=7
+                                          )
+
+        # Stuff for processing time management
+        polystart = datetime.now()
+
+        # Workhorse function for polygon detection
+        shapes = gp.getAllPoly(processed, 169, 12000, 7, 15, 5)
+
         imshape = img.shape
-    
+
         outImg = np.copy(fixedFull)
-    
+
         # Filter for regular shapes
         goodShapes = [s for s in shapes if s.isGoodSignCandidate(12)]
-    
-        bestMask = [True for i in range(0, len(goodShapes)) ]
-    
+
+        print 'Found ' + str(len(goodShapes)) + ' candidate shapes'
+
+        bestMask = [True for i in range(0, len(goodShapes))]
+
         # Eliminate overlapping shapes
         for i in range(0, len(goodShapes)):
-            for j in range(i+1, len(goodShapes)):
-                if goodShapes[i].overlaps(goodShapes[j]):
+            for j in range(i + 1, len(goodShapes)):
+                goodShapes[i].drawBoundingRect(outImg, (0, 255, 0))
+                if goodShapes[i].boundingIoU(goodShapes[j]) > 0.5:
                     if goodShapes[i].area > goodShapes[j].area:
                         bestMask[j] = False
                     else:
                         bestMask[i] = False
-    
+
         bestShapes = [s for (s, j) in zip(goodShapes, bestMask) if j == True]
-        
-        
+
         if bestShapes:
         
 

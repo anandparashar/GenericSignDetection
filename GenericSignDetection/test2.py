@@ -122,12 +122,6 @@ def main():
 
     img = cv2.imread(imageFileName)
 
-
-    #img = cv2.imread()
-
-    # img = cv2.imread()
-    cv2.imshow('Original', img)
-
     # Screen for images that need additional cleanup and apply it if necessary
     needsCleanup = "aiua12" in imageFileName
 
