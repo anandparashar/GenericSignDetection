@@ -7,6 +7,7 @@ import os
 def calcHist(image):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     hist = cv2.calcHist(image, [0], None, [256], [0,256])
+    hist = cv2.normalize(hist, hist)
     # hist = cv2.normalize(hist, hist).flatten()
     # hist, bins = np.histogram(image.ravel(), 256, [0, 256])
     # print hist.shape
@@ -30,12 +31,21 @@ def calcDistance(image1, image2):
     return calcHistDistance(calcHist(image1), calcHist(image2))
 
 
-def checksign(image):
-    path = "./hist_match_candidates/"
-    filelist = os.listdir("./hist_match_candidates/")
+'''
+    Check a sign ROI for similarity to known signs via normalized histogram correlation
+    
+    image - Image mat of extracted sign
+    path - Path to match candidates
+    minCorrelation - Correlation required with at least one example sign for a match
+    
+    Returns - True if the sign candidate matches a known sample, false otherwise
+'''
+def checksign(image, path, minCorrelation):
+    filelist = os.listdir(path)
     for file in filelist:
         image1 = cv2.imread(path+file)
-        if(calcDistance(image1, image) >0.7):
+        dist = calcDistance(image1, image)
+        if(dist > minCorrelation):
             return True
     return False
 

@@ -7,6 +7,7 @@ import preProcessing.InterlacingRemoval as ilr
 import polyDetect.polyshape
 import polyDetect.cycleDetection as cd
 from datetime import datetime
+import polyDetect.histogramMatching as histMatch
 import ntpath
 import math
 
@@ -158,7 +159,7 @@ def main():
     polystart = datetime.now()
 
     # Workhorse function for polygon detection
-    shapes = gp.getAllPoly(processed, 169, 12000, 7, 15, 5)
+    shapes = gp.getAllPoly(processed, 169, 12000, 5, 8, 5)
 
     imshape = img.shape
 
@@ -188,10 +189,19 @@ def main():
     # Display results
     for bs in bestShapes:
         color = (0, 0, 255)
-        bs.drawContour(outImg, color)
-        bs.drawBoundingRect(outImg, (0, 255, 0) )
+        extracted = bs.extractPolyImg(fixedFull, (255, 255, 255), (255, 255, 255))
+        hm = histMatch.checksign(extracted)
+        if hm:
+            bs.drawContour(outImg, color)
+            bs.drawBoundingRect(outImg, (0, 255, 0) )
 
     print "Found " + str( len(bestShapes) ) + " potential signs in " + str((polyend - polystart).microseconds/1000) + 'ms'
+
+
+    result = histMatch.checksign(extracted)
+    print result
+
+    cv2.imshow('Region', extracted)
 
     cv2.imshow('Shapes', outImg)
     cv2.waitKey(0)

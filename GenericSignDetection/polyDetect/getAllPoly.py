@@ -75,24 +75,34 @@ def getAllPoly(srcImg, minArea, maxArea, approxDist, maxGap, maxDoubleMergeSides
                             # If the distance is below mark those edges as possible locations for splits
                             if dist <= maxGap:
                                 mergeList.append((i, j, dist))
+                    # Process the merge list for all potential splits
                     for i in range(0, len(mergeList)):
+                        # Extract indices
                         (idx1, idx2, dist) = mergeList[i]
 
+                        # Append the outer 'wrap around' slice
                         slice1 = np.append( approx[idx2:], approx[0:idx1], axis = 0)
                         if 2 < len(slice1) <= 8:
                             newshapes.append(slice1)
 
+                        # Append the inner range slice
                         slice2 = approx[idx1:idx2]
                         if 2 < len(slice2) <= 8:
                             newshapes.append(slice2)
 
+                        # Process double merges
                         for j in range(i+1, len(mergeList)):
                             idx3, idx4, d2 = mergeList[j]
+                            # If the double merge length has passed the threshold break back out
                             if idx3 - idx1 > maxDoubleMergeSides or idx4 - idx2 > maxDoubleMergeSides:
                                 break
+
+                            # Get the sub contours that on each side of the double merge
                             sub1 = approx[idx1:idx3+1]
                             sub2 = approx[idx2:idx4+1]
+                            # Merge them into a new shape
                             sub = np.append(sub1, sub2[::-1], axis=0)
+                            # Append that shape to the shape list
                             newshapes.append(sub)
 
         slice = newshapes[old_size:]
@@ -104,16 +114,8 @@ def getAllPoly(srcImg, minArea, maxArea, approxDist, maxGap, maxDoubleMergeSides
 
     for c in validShapes:
 
-
-        # print c
-        # print len(c)
         # Approximate polygon shape
-
         approx = cv2.approxPolyDP(c, approxDist, closed=True)
-
-        # approx = cv2.convexHull(approx)
-        area = cv2.contourArea(approx)
-        con_area = cv2.contourArea(c)
 
         # Create a polyshape object
         p = polyshape(approx)
@@ -125,7 +127,7 @@ def getAllPoly(srcImg, minArea, maxArea, approxDist, maxGap, maxDoubleMergeSides
             cv2.minEnclosingCircle(c)
 
 
-
+        '''
         # START OPTIONAL RENDER CODE
         b = random.randint(0, 255)
         g = random.randint(0, 255)
@@ -153,6 +155,6 @@ def getAllPoly(srcImg, minArea, maxArea, approxDist, maxGap, maxDoubleMergeSides
     cv2.imshow('All contours', cImg)
     cv2.waitKey(0)
     # END OPTIONAL CONTOUR DISPLAY + WAIT CODE
-
+    '''
 
     return polys

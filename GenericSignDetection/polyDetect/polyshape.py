@@ -47,10 +47,15 @@ class polyshape:
 
         source: Image to extract the polygon from
     '''
-    def extractPolyImg(self, source, maskValue):
+    def extractPolyImg(self, source, maskValue, maskFill):
         maskImg = self.createMask(source, maskValue)
         masked = cv2.bitwise_and(source, maskImg)
+        smallMask = maskImg[self.by:self.by+self.bheight, self.bx:self.bx+self.bwidth]
+        smallMask = np.invert(smallMask)
+        smallMask = cv2.bitwise_and(smallMask, np.full(smallMask.shape, maskFill, dtype=np.uint8) )
         extracted = masked[self.by:self.by+self.bheight, self.bx:self.bx+self.bwidth]
+        extracted = cv2.bitwise_or(extracted, smallMask)
+
         return extracted
 
     ''' Determines a matching value between two polygons using Hu Momements:

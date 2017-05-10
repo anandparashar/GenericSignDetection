@@ -17,7 +17,7 @@ import preProcessing.histogram as hist
 import polyDetect.getAllPoly as gp
 import preProcessing.InterlacingRemoval as ilr
 import polyDetect.polyshape
-import polyDetect.cycleDetection as cd
+import polyDetect.histogramMatching as hm
 from datetime import datetime
 import ntpath
 
@@ -90,7 +90,7 @@ def main():
         threshold = hist.estimateThreshold(fixedFull)
 
         # Run the rest of the preprocessing
-        processed, p2, lines = pp.process(image=fixedFull, canny_param1=threshold / 3,
+        processed, p2, lines = pp.process(image=fixedFull, canny_param1=threshold / 2,
                                           canny_param2=threshold,
                                           harriscorner_blockSize=2,
                                           harriscorner_kSize=3,
@@ -105,7 +105,7 @@ def main():
         polystart = datetime.now()
 
         # Workhorse function for polygon detection
-        shapes = gp.getAllPoly(processed, 169, 12000, 7, 15, 5)
+        shapes = gp.getAllPoly(processed, 169, 12000, 5, 8, 4)
 
         imshape = img.shape
 
@@ -130,10 +130,19 @@ def main():
 
         bestShapes = [s for (s, j) in zip(goodShapes, bestMask) if j == True]
 
-        if bestShapes:
+        # Check against known histograms
+        finalShapes = []
+        for bs in bestShapes:
+            extracted = bs.extractPolyImg(fixedFull, (255, 255, 255), (255, 255, 255))
+            if hm.checksign(extracted, "../hist_match_candidates/", 0.99):
+                finalShapes.append(bs)
+
+
+
+        if finalShapes:
         
 
-            predictions.append([file_name, bestShapes, "shape"])
+            predictions.append([file_name, finalShapes, "shape"])
                 
         
         
