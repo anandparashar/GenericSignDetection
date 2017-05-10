@@ -1,3 +1,12 @@
+"""
+polyShape object represents detected polygon objects
+
+CS682 - Final Project - Generic Sign Detection
+Spring 2017
+
+Author: Joseph Kinzel
+
+"""
 
 import cv2
 import numpy as np
@@ -102,6 +111,27 @@ class polyshape:
 
         # If no angle failed the test then the polygon is angle regular
         return True
+
+
+    '''
+    Calculate the intersection of union of two polyShape's bounding rectangles
+    
+    other - Other polyShape to compare against
+    '''
+    def boundingIoU(self, other):
+        selfAltCornerX = self.bx + self.bwidth
+        selfAltCornerY = self.by + self.bheight
+
+        otherAltCornerX = other.bx + other.bwidth
+        otherAltCornerY = other.by + other.bheight
+
+        intersection = max(0, min(selfAltCornerX, otherAltCornerX) - max(self.bx, other.bx))
+        intersection *= max(0, min(selfAltCornerY, otherAltCornerY) - max(self.by, other.by))
+
+        union = self.area + other.area - intersection
+        if union == 0.0:
+            return 1.0
+        return intersection/union
 
     '''
     Checks if a shape is an angle-regular polygon and as such, a good sign candidate

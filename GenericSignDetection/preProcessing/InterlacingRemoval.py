@@ -1,5 +1,15 @@
+
+
 import numpy as np
 import cv2
+
+'''
+    Removes screen effect from camera images
+    
+    image - Source image
+    
+    Returns: Image with screen effect removed
+'''
 
 def clean(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

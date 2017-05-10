@@ -36,6 +36,7 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
     #displayResized("edge image", edgeImg)
 
     #Morphological
+
     kernel = np.ones((2, 2), np.uint8)
     edgeImgProcessed = cv2.morphologyEx(edgeImg, cv2.MORPH_CLOSE, kernel)
     #displayResized("after morphological transform 1", edgeImgProcessed)
@@ -52,9 +53,11 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
 
     #displayResized("after contour removal", processedImage)
 
+    
     kernel = np.ones((2, 2), np.uint8)
     processedImage = dilation = cv2.dilate(processedImage, kernel, iterations=1)
     # kernel = np.ones((3, 3), np.uint8)
+
     processedImage = cv2.morphologyEx(processedImage, cv2.MORPH_CLOSE, kernel)
     # kernel = np.ones((3, 3), np.uint8)
     processedImage = cv2.erode(processedImage, kernel, iterations=1)
@@ -62,8 +65,10 @@ def process(image, canny_param1, canny_param2, harriscorner_blockSize , harrisco
 
     # processedImage = skeltonize(processedImage)
     # displayResized("after skeltonization", processedImage)
+
     houghLines = lineDetectionProbHough(processedImage, hough_threshold, hough_minLen, hough_maxGap)
     # houghLines = lineDetectionStandardHough(processedImage)
+
     cv2.waitKey(0)
     return processedImage, processedImage, houghLines
 
@@ -169,6 +174,10 @@ def smallSegmentRemovalContours(image, preCornerImage,  ratio):
     for i in range(len(contours)):
         if cv2.arcLength(contours[i], False) < maxLen * ratio:
             preCornerImage = cv2.drawContours(preCornerImage, contours, i, color=(0,0,0))
+
+    for i in range(len(contours)):
+        if cv2.arcLength(contours[i], False) >= maxLen * ratio:
+            cv2.drawContours(preCornerImage, contours, i, color=(255, 255, 255))
     # displayResized("after contour removal", image)
     return preCornerImage
 
